@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { type Article } from "./articles.types";
+import { type Article } from "./articles-types";
 import { pool } from "../database";
 
 const router = Router();

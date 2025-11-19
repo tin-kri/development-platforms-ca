@@ -2,8 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { pool } from "./database"
-import userRoutes from "./users/users.routes";
-import articleRoutes from "./articles/articles.routes";
+import userRoutes from "./users/users-routes";
+import articleRoutes from "./articles/articles-routes";
 
 dotenv.config();
 
