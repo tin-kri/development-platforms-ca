@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { pool } from "./database"
 import userRoutes from "./users/users.routes";
+import articleRoutes from "./articles/articles.routes";
 
 dotenv.config();
 
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/users", userRoutes);
-
+app.use("/articles", articleRoutes)
 // app.get("/", (req, res) => {
 //   res.json({ message: "Hello world!" });
 // });
