@@ -7,7 +7,7 @@ import { pool } from "../database"
 const router = Router();
 
 //GET
-router.get("/", async (req: Request, res, Response)=>{
+router.get("/", async (req: Request, res: Response)=>{
     try{
         const [rows] = await pool.execute("select * from users");
         const users = rows as User[];
@@ -18,3 +18,5 @@ router.get("/", async (req: Request, res, Response)=>{
         res.status(500).json({error: "Failed to fetch users"});
     }
 });
+
+export default router;
