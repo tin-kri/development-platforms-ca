@@ -4,3 +4,8 @@ export interface User {
     password_hash: string;
     created_at: Date;  
 }
+
+export interface UserResponse {
+    id: number;
+    email: string;
+}

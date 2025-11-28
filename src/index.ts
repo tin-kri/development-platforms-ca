@@ -2,8 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { pool } from "./database"
-import userRoutes from "./users/users.routes";
-import articleRoutes from "./articles/articles.routes";
+import userRoutes from "./users/users-routes";
+import articleRoutes from "./articles/articles-routes";
+import authRoutes from "./auth/auth-routes"
 
 dotenv.config();
 
@@ -14,6 +15,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/users", userRoutes);
+
+app.use("/auth", authRoutes);  
 app.use("/articles", articleRoutes)
 // app.get("/", (req, res) => {
 //   res.json({ message: "Hello world!" });
