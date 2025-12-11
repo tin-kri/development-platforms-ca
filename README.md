@@ -1,6 +1,6 @@
 # News API - Development Platforms Course Assignment
 
-A news platform built for the course Development Platforms using TypeScript and Express where users can browse and when logged in users can submit articles.
+A news platform built for the course Development Platforms using TypeScript and Express where users can read articles and when logged in users can submit articles.
 
 ## Features
 
@@ -155,3 +155,12 @@ Looking back now, I'm surprised by how much I learned without it being as overwh
 Building a custom API gave me control over authentication, validation, and database structure. It taught me about how JWT works, not just how to use it. The downside was the time it took—a pre-built solution would have been faster. I'm also responsible for security updates and fixing any bugs myself.
 
 I have not worked with Supabase yet, but from what I understand, it would have saved a lot of development time with built-in authentication and database features. The trade-off is less learning about how things work under the hood and being dependent on their platform. I'm curious to try it in future projects to see how it compares
+
+## License
+
+This project is for educational purposes as part of the Development Platforms course.
+
+## Author
+
+Tina Kristiansen
+Noroff School of Technology and Digital Media
