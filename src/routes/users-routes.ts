@@ -1,14 +1,25 @@
-import { Router, type Request, type Response } from "express";
+import { Router } from "express";
 import { User, ArticleWithUser } from "../interfaces/interfaces";
 import { pool } from "../database";
 import { validateUserId } from "../middleware/user-validation";
 
 const router = Router();
 
-//GET users
-router.get("/", async (req: Request, res: Response) => {
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieve a list of all registered users
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.execute("select * from users");
+    const [rows] = await pool.execute("SELECT * FROM users");
     const users = rows as User[];
     res.json(users);
   } catch (error) {
@@ -17,12 +28,33 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-//GET single user
-router.get("/:id", validateUserId, async (req: Request, res: Response) => {
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Get user by ID
+ *     description: Retrieve a single user by their unique ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user to retrieve
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: User object
+ *       400:
+ *         description: Invalid user ID
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/:id", validateUserId, async (req, res) => {
   try {
     const userId = Number(req.params.id);
-
-    const [rows] = await pool.execute("SELECT * FROM users where id = ?", [
+    const [rows] = await pool.execute("SELECT * FROM users WHERE id = ?", [
       userId,
     ]);
     const users = rows as User[];
@@ -38,7 +70,27 @@ router.get("/:id", validateUserId, async (req: Request, res: Response) => {
   }
 });
 
-// GET articles by specific user
+/**
+ * @swagger
+ * /users/{id}/articles:
+ *   get:
+ *     summary: Get articles by user ID
+ *     description: Retrieve all articles submitted by a specific user
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the user whose articles to retrieve
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of articles by the user
+ *       400:
+ *         description: Invalid user ID
+ *       500:
+ *         description: Internal server error
+ */
 router.get("/:id/articles", validateUserId, async (req, res) => {
   try {
     const userId = Number(req.params.id);
@@ -66,4 +118,5 @@ router.get("/:id/articles", validateUserId, async (req, res) => {
     res.status(500).json({ error: "Failed to fetch user articles" });
   }
 });
+
 export default router;

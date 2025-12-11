@@ -7,7 +7,18 @@ import { ResultSetHeader } from "mysql2";
 
 const router = Router();
 
-//GET /articles
+/**
+ * @swagger
+ * /articles:
+ *   get:
+ *     summary: Get all articles
+ *     description: Retrieve all articles with author information (public access)
+ *     responses:
+ *       200:
+ *         description: List of all articles with author email
+ *       500:
+ *         description: Internal server error
+ */
 router.get("/", async (req: Request, res: Response) => {
   try {
     const [rows] = await pool.execute(
@@ -23,6 +34,7 @@ router.get("/", async (req: Request, res: Response) => {
       INNER JOIN users ON articles.submitted_by = users.id
       ORDER BY articles.created_at DESC`
     );
+
     const articles = rows as ArticleWithUser[];
     res.json(articles);
   } catch (error) {
@@ -31,7 +43,47 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// POST
+/**
+ * @swagger
+ * /articles:
+ *   post:
+ *     summary: Create a new article
+ *     description: Submit a new article (requires authentication with JWT token)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - body
+ *               - category
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Article title (3-255 characters)
+ *                 example: How AI Is Affecting Music
+ *               body:
+ *                 type: string
+ *                 description: Article content (minimum 10 characters)
+ *                 example: Artificial intelligence has become a powerful force...
+ *               category:
+ *                 type: string
+ *                 description: Article category (2-100 characters)
+ *                 example: Music
+ *     responses:
+ *       201:
+ *         description: Article created successfully
+ *       400:
+ *         description: Validation failed
+ *       401:
+ *         description: Access token required
+ *       403:
+ *         description: Invalid or expired token
+ *       500:
+ *         description: Internal server error
+ */
 router.post(
   "/",
   authenticateToken,

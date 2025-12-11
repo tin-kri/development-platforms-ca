@@ -11,7 +11,40 @@ import { generateToken } from "../utils/jwt";
 
 const router = Router();
 
-//POST /register
+/**
+ * @swagger
+ * /auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     description: Create a new user account with email and password
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: Password (min 8 chars, must include uppercase, lowercase, number, special character)
+ *                 example: SecurePass123!
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *       400:
+ *         description: User already exists or validation failed
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/register", validateRegistration, async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -26,13 +59,15 @@ router.post("/register", validateRegistration, async (req, res) => {
         error: "User with this email already exists",
       });
     }
+
     const saltRounds = 10;
     const hashPassword = await bcrypt.hash(password, saltRounds);
 
     const [result]: [ResultSetHeader, any] = await pool.execute(
-      "INSERT INTO users (email, password_hash) VALUES (?, ?)", // password_hash column
+      "INSERT INTO users (email, password_hash) VALUES (?, ?)",
       [email, hashPassword]
     );
+
     const userResponse: UserResponse = {
       id: result.insertId,
       email,
@@ -50,7 +85,42 @@ router.post("/register", validateRegistration, async (req, res) => {
   }
 });
 
-//POST /login
+/**
+ * @swagger
+ * /auth/login:
+ *   post:
+ *     summary: Login user
+ *     description: Authenticate user and receive JWT token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 description: User's password
+ *                 example: SecurePass123!
+ *     responses:
+ *       200:
+ *         description: Login successful, returns JWT token
+ *       401:
+ *         description: Invalid email or password
+ *       400:
+ *         description: Validation failed
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/login", validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
