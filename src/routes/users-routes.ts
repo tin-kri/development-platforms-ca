@@ -1,12 +1,11 @@
 import { Router, type Request, type Response } from "express";
-import { users } from "./users-data";
-import { type User } from "./users-types";
+import { User, ArticleWithUser } from "../interfaces/interfaces";
 import { pool } from "../database";
-// import { checkAuth } from ../middleware/auth.middleware;
+import { authenticateToken } from "../middleware/auth-validation";
 
 const router = Router();
 
-//GET USERS
+//GET users
 router.get("/", async (req: Request, res: Response) => {
   try {
     const [rows] = await pool.execute("select * from users");
@@ -18,7 +17,7 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-//GET SINGLE USER
+//GET single user
 router.get("/:id", async (req: Request, res: Response) => {
   try {
     const userId = Number(req.params.id);
@@ -43,4 +42,36 @@ router.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
+// GET articles by specific user
+router.get("/:id/articles", async (req, res) => {
+  try {
+    const userId = Number(req.params.id);
+
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: "Invalid user id" });
+    }
+
+    const [rows] = await pool.execute(
+      `SELECT 
+        articles.id,
+        articles.title,
+        articles.body,
+        articles.category,
+        articles.submitted_by,
+        articles.created_at,
+        users.email
+      FROM articles
+      INNER JOIN users ON articles.submitted_by = users.id
+      WHERE users.id = ?
+      ORDER BY articles.created_at DESC`,
+      [userId]
+    );
+
+    const articles = rows as ArticleWithUser[];
+    res.json(articles);
+  } catch (error) {
+    console.error("Error fetching user articles:", error);
+    res.status(500).json({ error: "Failed to fetch user articles" });
+  }
+});
 export default router;

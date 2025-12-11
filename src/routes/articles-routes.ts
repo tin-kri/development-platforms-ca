@@ -1,16 +1,13 @@
 import { Router, type Request, type Response } from "express";
-import { type Article } from "./articles-types";
+import { type ArticleWithUser } from "../interfaces/interfaces";
 import { pool } from "../database";
 import { authenticateToken } from "../middleware/auth-validation";
-import { validateCreateArticle } from "./articles-validation";
+import { validateCreateArticle } from "../middleware/articles-validation";
 import { ResultSetHeader } from "mysql2";
 
 const router = Router();
 
-//GET ARTICLES
-//does not use //users.email as submitted_by//
-//  //INNER JOIN users ON articles.submitted_by = users.id//
-// when public unauth access
+//GET /articles
 router.get("/", async (req: Request, res: Response) => {
   try {
     const [rows] = await pool.execute(
@@ -19,36 +16,35 @@ router.get("/", async (req: Request, res: Response) => {
         articles.title,
         articles.body,
         articles.category,
-        articles.created_at
+        articles.submitted_by,
+        articles.created_at,
+        users.email
       FROM articles
+      INNER JOIN users ON articles.submitted_by = users.id
       ORDER BY articles.created_at DESC`
     );
-    const articles = rows as Article[];
+    const articles = rows as ArticleWithUser[];
     res.json(articles);
   } catch (error) {
-    console.error("Error", error);
+    console.error("Error fetching articles:", error);
     res.status(500).json({ error: "Failed to fetch articles" });
   }
 });
 
-// POST ARTICLES - Protected (add later)
-// router.post("/", checkAuth, async (req: Request, res: Response) => {
-//   // Article logic
-// });
+// POST
 router.post(
   "/",
-  authenticateToken, // 1. Check if user is logged in
-  validateCreateArticle, // 2. Validate article data
+  authenticateToken,
+  validateCreateArticle,
   async (req: Request, res: Response) => {
     try {
       const { title, body, category } = req.body;
-      const userId = req.user?.id; // Get user ID from JWT token
+      const userId = req.user?.id;
 
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
 
-      // Insert article into database
       const [result] = await pool.execute<ResultSetHeader>(
         "INSERT INTO articles (title, body, category, submitted_by) VALUES (?, ?, ?, ?)",
         [title, body, category, userId]
