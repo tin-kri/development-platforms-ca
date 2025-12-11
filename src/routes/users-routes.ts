@@ -1,8 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { User, ArticleWithUser } from "../interfaces/interfaces";
-
 import { pool } from "../database";
-// import { checkAuth } from ../middleware/auth.middleware;
+import { authenticateToken } from "../middleware/auth-validation";
 
 const router = Router();
 

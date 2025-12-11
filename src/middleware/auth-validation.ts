@@ -65,7 +65,7 @@ export function authenticateToken(
       error: "Token must be in format: Bearer <token>",
     });
   }
-//gets token from bearer
+
   const token = authHeader.substring(7);
 
   const payload = verifyToken(token);

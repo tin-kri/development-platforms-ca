@@ -31,24 +31,20 @@ router.get("/", async (req: Request, res: Response) => {
   }
 });
 
-// POST ARTICLES - Protected (add later)
-// router.post("/", checkAuth, async (req: Request, res: Response) => {
-//   // Article logic
-// });
+// POST
 router.post(
   "/",
-  authenticateToken, // 1. Check if user is logged in
-  validateCreateArticle, // 2. Validate article data
+  authenticateToken,
+  validateCreateArticle,
   async (req: Request, res: Response) => {
     try {
       const { title, body, category } = req.body;
-      const userId = req.user?.id; // Get user ID from JWT token
+      const userId = req.user?.id;
 
       if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
       }
 
-      // Insert article into database
       const [result] = await pool.execute<ResultSetHeader>(
         "INSERT INTO articles (title, body, category, submitted_by) VALUES (?, ?, ?, ?)",
         [title, body, category, userId]
