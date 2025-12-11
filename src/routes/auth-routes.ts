@@ -75,7 +75,7 @@ router.post("/login", validateLogin, async (req, res) => {
     const user = users[0];
 
     // Compare password with hashed password
-    const validPassword = await bcrypt.compare(password, user.password_hash);
+    const validPassword = await bcrypt.compare(password, user.password_hash!);
 
     if (!validPassword) {
       return res.status(401).json({
