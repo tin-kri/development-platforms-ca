@@ -1,6 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { users } from "./users-data";
-import { type User } from "./users-types";
+import { User } from "../interfaces/interfaces";
 import { pool } from "../database";
 // import { checkAuth } from ../middleware/auth.middleware;
 

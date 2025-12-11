@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from "express";
 import { type ArticleWithUser } from "../interfaces/interfaces";
 import { pool } from "../database";
 import { authenticateToken } from "../middleware/auth-validation";
-import { validateCreateArticle } from "./articles-validation";
+import { validateCreateArticle } from "../middleware/articles-validation";
 import { ResultSetHeader } from "mysql2";
 
 const router = Router();
@@ -23,7 +23,7 @@ router.get("/", async (req: Request, res: Response) => {
       INNER JOIN users ON articles.submitted_by = users.id
       ORDER BY articles.created_at DESC`
     );
-     const articles = rows as ArticleWithUser[];
+    const articles = rows as ArticleWithUser[];
     res.json(articles);
   } catch (error) {
     console.error("Error fetching articles:", error);

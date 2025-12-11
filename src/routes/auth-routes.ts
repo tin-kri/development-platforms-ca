@@ -6,7 +6,7 @@ import {
   validateRegistration,
   validateLogin,
 } from "../middleware/auth-validation";
-import { User, UserResponse } from "../users/users-types";
+import { User, UserResponse } from "../interfaces/interfaces";
 import { generateToken } from "../utils/jwt";
 
 //create router
