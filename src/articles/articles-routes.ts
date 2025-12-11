@@ -1,5 +1,5 @@
 import { Router, type Request, type Response } from "express";
-import { type Article } from "./articles-types";
+import { type ArticleWithUser } from "../interfaces/interfaces";
 import { pool } from "../database";
 import { authenticateToken } from "../middleware/auth-validation";
 import { validateCreateArticle } from "./articles-validation";
@@ -7,10 +7,7 @@ import { ResultSetHeader } from "mysql2";
 
 const router = Router();
 
-//GET ARTICLES
-//does not use //users.email as submitted_by//
-//  //INNER JOIN users ON articles.submitted_by = users.id//
-// when public unauth access
+//GET /articles
 router.get("/", async (req: Request, res: Response) => {
   try {
     const [rows] = await pool.execute(
@@ -19,14 +16,17 @@ router.get("/", async (req: Request, res: Response) => {
         articles.title,
         articles.body,
         articles.category,
-        articles.created_at
+        articles.submitted_by,
+        articles.created_at,
+        users.email
       FROM articles
+      INNER JOIN users ON articles.submitted_by = users.id
       ORDER BY articles.created_at DESC`
     );
-    const articles = rows as Article[];
+     const articles = rows as ArticleWithUser[];
     res.json(articles);
   } catch (error) {
-    console.error("Error", error);
+    console.error("Error fetching articles:", error);
     res.status(500).json({ error: "Failed to fetch articles" });
   }
 });
