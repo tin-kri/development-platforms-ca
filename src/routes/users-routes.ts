@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { User, ArticleWithUser } from "../interfaces/interfaces";
 import { pool } from "../database";
-import { authenticateToken } from "../middleware/auth-validation";
+import { validateUserId } from "../middleware/user-validation";
 
 const router = Router();
 
@@ -18,15 +18,11 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 //GET single user
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id", validateUserId, async (req: Request, res: Response) => {
   try {
     const userId = Number(req.params.id);
 
-    if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid user id" });
-    }
-
-    const [rows] = await pool.execute("select * from users where id = ?", [
+    const [rows] = await pool.execute("SELECT * FROM users where id = ?", [
       userId,
     ]);
     const users = rows as User[];
@@ -43,13 +39,9 @@ router.get("/:id", async (req: Request, res: Response) => {
 });
 
 // GET articles by specific user
-router.get("/:id/articles", async (req, res) => {
+router.get("/:id/articles", validateUserId, async (req, res) => {
   try {
     const userId = Number(req.params.id);
-
-    if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid user id" });
-    }
 
     const [rows] = await pool.execute(
       `SELECT 
