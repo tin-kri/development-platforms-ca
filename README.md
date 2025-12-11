@@ -160,7 +160,3 @@ I have not worked with Supabase yet, but from what I understand, it would have s
 
 This project is for educational purposes as part of the Development Platforms course.
 
-## Author
-
-Tina Kristiansen
-Noroff School of Technology and Digital Media
