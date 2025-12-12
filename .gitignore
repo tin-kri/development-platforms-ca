@@ -30,11 +30,6 @@ pnpm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Database credentials or dumps
-*.sql
-*.sqlite
-*.db
-
 # Temporary files
 tmp/
 temp/
