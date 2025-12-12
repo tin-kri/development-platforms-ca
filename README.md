@@ -30,22 +30,22 @@ A news platform built for the course Development Platforms using TypeScript and 
 
 ### Steps
 
-1. **Clone the repository**
+### Steps
 
+1. **Clone the repository**
 ```bash
-   git clone https://github.com/tin-kri/development-platforms-ca
+   git clone https://github.com/tin-kri/development-platforms-ca.git
    cd development-platforms-ca
 ```
 
 2. **Install dependencies**
-
 ```bash
    npm install
 ```
 
 3. **Set up the database**
    
-   **Option A:**
+   **Option A (Recommended):**
 ```bash
    mysql -u root -p < mysqlDB/newsdb.sql
 ```
