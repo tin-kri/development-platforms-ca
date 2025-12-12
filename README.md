@@ -43,30 +43,15 @@ A news platform built for the course Development Platforms using TypeScript and 
    npm install
 ```
 
-3. **Create MySQL database**
-
-   Open MySQL Workbench or your MySQL and create the database specified in DB_NAME.
-
-4. **Create database tables**
-
-```sql
-   CREATE TABLE users (
-     id INT PRIMARY KEY AUTO_INCREMENT,
-     email VARCHAR(255) NOT NULL UNIQUE,
-     password_hash VARCHAR(255) NOT NULL,
-     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-   );
-
-   CREATE TABLE articles (
-     id INT PRIMARY KEY AUTO_INCREMENT,
-     title VARCHAR(255) NOT NULL,
-     body TEXT NOT NULL,
-     category VARCHAR(100) NOT NULL,
-     submitted_by INT NOT NULL,
-     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-     FOREIGN KEY (submitted_by) REFERENCES users(id) ON DELETE CASCADE
-   );
+3. **Set up the database**
+   
+   **Option A:**
+```bash
+   mysql -u root -p < mysqlDB/newsdb.sql
 ```
+   
+   **Option B (Manual):**
+   Open MySQL Workbench and run the SQL file at `mysqlDB/newsdb.sql`
 
 ## Configuration
 
@@ -94,7 +79,7 @@ A news platform built for the course Development Platforms using TypeScript and 
 **Important:**
 
 - Replace `your_mysql_password` with your actual MySQL root password
-- Replace `JWT_SECRET` with a long, random string (for production, use a secure random generator)
+- Replace `JWT_SECRET` with a long, random string 
 
 ## Running the Project
 
